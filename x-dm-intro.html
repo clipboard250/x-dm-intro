@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>𝕏 Biz Group Chat Intro Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+        }
+        #introOutput {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+   <h1>𝕏 Biz Group Chat Intro Builder</h1>
+    
+    <p><strong>Tip:</strong> Keep answers simple. The generator makes your intro work—fast.</p>
+    
+    <label for="name">Who I am:</label>
+    <input type="text" id="name" placeholder="e.g., Dayna Himot">
+    
+    <label for="jobTitle">What I do:</label>
+    <input type="text" id="jobTitle" placeholder="e.g., copywriter, strategist, founder and messaging expert">
+    
+    <label for="companyName">Company Name:</label>
+    <input type="text" id="companyName" placeholder="e.g., Gofer Content">
+    
+    <label for="audience">Who I help:</label>
+   <input type="text" id="audience" placeholder="e.g., business owners whose posts may be causing silent cringe">
+    
+    <label for="whatIBring">What I bring to the group:</label>
+   <input type="text" id="whatIBring" placeholder="e.g., words and strategy that make people stop and read">
+<label for="idealClient">What is your ideal client profile?</label>  
+<p style="font-size: 14px; color: #555; margin-top: 5px;">  
+📌 Tip: Focus on who you actually work with.<br>  
+💼 Industry: What space are they in?<br>  
+👥 Size: Solo, small team, big org?<br>  
+🔥 Challenge: What’s their biggest problem?<br>  
+💡 One sentence is all you need.  
+</p>  
+<input type="text" id="idealClient" placeholder="e.g., industry, business size, and biggest challenge they need solved">
+    
+    <label for="businessHandle">Business Handle (optional):</label>
+    <input type="text" id="businessHandle" placeholder="e.g., @gofercontent">
+    
+    <label for="wordLimit">Maximum word count:</label>
+<select id="wordLimit">
+    <option value="25">25 words</option>
+    <option value="35">35 words</option>
+    <option value="25">25 words</option>
+<option value="35">35 words</option>
+<option value="45">45 words</option>
+<option value="60">60 words (Max limit)</option>
+</select>
+    
+    <button onclick="generateIntro()">Generate Intro</button>
+    
+    <div id="introOutput"></div>
+    
+    <button onclick="copyToClipboard()">Copy to Clipboard</button>
+    
+    <script>
+        function generateIntro() {
+            // Get and trim user inputs
+            const name = document.getElementById('name').value.trim();
+            const jobTitle = document.getElementById('jobTitle').value.trim();
+            function formatSentenceCase(str) {
+    return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
+const audience = formatSentenceCase(document.getElementById('audience').value.trim());
+const whatIBring = formatSentenceCase(document.getElementById('whatIBring').value.trim());
+            const businessHandle = document.getElementById('businessHandle').value.trim();
+const idealClient = document.getElementById('idealClient').value.trim();
+const companyName = document.getElementById('companyName').value.trim();
+            const wordLimit = parseInt(document.getElementById('wordLimit').value);
+
+            // Ensure required fields are filled
+            if (!name || !jobTitle) {
+                alert('Please enter at least your name and job title.');
+                return;
+            }
+
+            // Start with the base introduction
+            let mainIntro = `Hey everyone, I’m ${name}—${jobTitle}`;
+
+        // Add company name if provided
+if (companyName) {
+    mainIntro += ` at ${companyName}`;
+}
+// Add business handle if provided, ensuring no duplicate "@"
+if (businessHandle) {
+    let cleanHandle = businessHandle.startsWith('@') ? businessHandle : `@${businessHandle}`;
+    mainIntro += ` (${cleanHandle})`;
+}
+
+// Ensure a period at the end of this section before moving to the next sentence
+mainIntro += '.';
+
+            // Check if adding the audience and what I bring fits within the word limit
+            let helpSentence = '';
+            if (audience && whatIBring) {
+                helpSentence = ` I help ${audience} with ${whatIBring}.`;
+            } else if (audience) {
+                helpSentence = ` I help ${audience}.`;
+            } else if (whatIBring) {
+                helpSentence = ` I bring ${whatIBring}.`;
+            }
+
+            // Add the help sentence if it fits
+            if (helpSentence && countWords(mainIntro + helpSentence) <= wordLimit) {
+                mainIntro += helpSentence;
+            }
+
+            // Try to add a closing sentence if it fits
+            let fullIntro = mainIntro;
+if (idealClient.trim() !== "") { // Only add if not empty
+    let idealClientText = ` My ideal clients are ${idealClient}.`;
+    if (countWords(fullIntro + idealClientText) <= wordLimit) {
+        fullIntro += idealClientText;
+    }
+}
+            if (countWords(fullIntro + ' Excited to connect!') <= 60) {
+                fullIntro += ' Excited to connect!';
+            }
+
+            // Display the generated intro
+            document.getElementById('introOutput').textContent = fullIntro;
+        }
+
+        function countWords(str) {
+            // Count words by splitting on whitespace
+            return str.trim().split(/\s+/).length;
+        }
+
+        function copyToClipboard() {
+            const introText = document.getElementById('introOutput').textContent;
+            if (!introText) {
+                alert('Nothing to copy.');
+                return;
+            }
+
+            // Create a temporary textarea to copy the text
+            const textarea = document.createElement('textarea');
+            textarea.value = introText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Intro copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
